@@ -13,7 +13,7 @@ def main(game_index: int, mode: str) -> None:
             1. 连续控制下的高山行车
             2. 连续控制下的倒立摆
             3. 离散控制下的平衡摆
-            4. 离散控制下的高山行车
+            4. 离散控制下的高山行车（目前控制效果不佳）
             5. 离散控制下的二级摆
     :param mode: str,
         [Train, Test]

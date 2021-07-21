@@ -155,8 +155,8 @@ class PPO(object):
         return obs_ph, act_ph, logp_act_old_ph, adv_ph, repay_ph, ou_noise_ph, val, pi, logp_pi, \
                train_policy, train_evaluate
 
-    def train(self, learning_epochs: int, retrain_label: bool, update_num: int,
-              save_freq: int, max_iter_per_epoch: int):
+    def train(self, learning_epochs: int, retrain_label: bool, save_freq: int, max_iter_per_epoch: int,
+              update_num: int = 50):
         # 创建计算资源会话
         sess = tf.Session()
         # 创建模型保存对象
@@ -200,7 +200,7 @@ class PPO(object):
 
                     # 读取缓存数据
                     obs_t_b, act_t_b, logp_act_t_b, repay_t_b, adv_t_b = buffer.get()
-                    # 多次更新策略网络
+                    # 更新策略网络
                     for _ in range(update_num):
                         sess.run([self.train_policy_op, self.train_evaluate_op],
                                   feed_dict={self.obs_ph: obs_t_b, self.act_ph: act_t_b,
@@ -240,5 +240,3 @@ class PPO(object):
                     break
             else:
                 self.logger.to_log('控制达到最大控制次数，游戏被截断，总得分为：%.2f' % ep_repay)
-
-

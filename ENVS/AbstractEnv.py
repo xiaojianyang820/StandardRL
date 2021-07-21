@@ -1,4 +1,6 @@
 import abc
+from abc import ABC
+
 import numpy as np
 from TOOLS.Logger import Logger
 
@@ -185,3 +187,44 @@ class AbsEnv(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def _close(self):
         pass
+
+
+class AbsImageEnv(AbsEnv, ABC):
+    """
+        该类是用于处理基于图像的增强学习问题的一个抽象类，规定了一个标准环境的API接口，任何具体环境类都需要继承自该抽象类，
+        各个具体环境类不得添加新的对外接口
+    """
+    def __init__(self, logger: Logger = None):
+        """
+        在环境初始化的过程中，必须包含如下四个属性：
+            1. 状态观测的维度obs_dim(tuple[int])
+            2. 行动向量的维度act_dim(int)
+            3. 状态观测的类型obs_type(str,[Categorical, Continuous])
+            4. 行动向量的类型act_type(str,[Categorical, Continuous])
+
+        :param logger: Logger对象
+            用于记录训练日志的日志对象
+        :return
+        """
+        super(AbsImageEnv, self).__init__(logger=logger)
+        # 需要确保该类对象中的obs_dim是描述图像长宽高的一个tuple
+        assert isinstance(self.obs_dim, tuple)
+
+    def check_obs(self, obs: object) -> bool:
+        """
+        检验状态观测向量obs是否合法
+
+        :param obs: object,
+            待校验是否合法的状态观测向量
+        :return: bool,
+            如果状态观测向量是合法的，那么就返回True
+            如果状态观测向量是非法的，那么就返回False
+        """
+        try:
+            assert isinstance(obs, np.ndarray)
+        except AssertionError as e:
+            self.logger.to_warn("环境对象返回的状态观测类型不正确，必须是np.ndarray")
+            return False
+
+        return True
+

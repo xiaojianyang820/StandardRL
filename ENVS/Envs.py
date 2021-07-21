@@ -172,6 +172,3 @@ class PendulumEnv(AbsEnv):
 
     def _close(self):
         self.env.close()
-
-
-
